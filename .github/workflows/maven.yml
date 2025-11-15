@@ -31,3 +31,5 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: List artifacts
       run: ls -R target
+
+      
