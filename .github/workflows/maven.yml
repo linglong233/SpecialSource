@@ -34,39 +34,16 @@ jobs:
     - name: List artifacts
       run: ls -R target
 
-    # 上传 shaded 版本
-    - name: Upload shaded jar
+    - name: Create or update release and upload artifacts
       if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: ncipollo/release-action@v1
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./target/SpecialSource-1.11.6-SNAPSHOT-shaded.jar
-        asset_name: SpecialSource-1.11.6-SNAPSHOT-shaded-${{ github.ref_name }}.jar
-        asset_content_type: application/java-archive
-
-    # 上传 shaded_proguard_base 版本
-    - name: Upload shaded_proguard_base jar
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./target/SpecialSource-1.11.6-SNAPSHOT-shaded_proguard_base.jar
-        asset_name: SpecialSource-1.11.6-SNAPSHOT-shaded_proguard_base-${{ github.ref_name }}.jar
-        asset_content_type: application/java-archive
-
-    # 上传普通 jar
-    - name: Upload normal jar
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./target/SpecialSource-1.11.6-SNAPSHOT.jar
-        asset_name: SpecialSource-1.11.6-SNAPSHOT-${{ github.ref_name }}.jar
-        asset_content_type: application/java-archive
-    
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ github.ref_name }}                    # 当前 tag（例如 v1.11.6）
+        name: Release ${{ github.ref_name }}           # Release 名
+        allowUpdates: true                             # 已存在则更新
+        artifacts: |
+          target/SpecialSource-1.11.6-SNAPSHOT-shaded.jar,
+          target/SpecialSource-1.11.6-SNAPSHOT-shaded_proguard_base.jar,
+          target/SpecialSource-1.11.6-SNAPSHOT.jar
+        artifactContentType: application/java-archive
