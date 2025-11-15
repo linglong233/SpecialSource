@@ -11,8 +11,6 @@ name: Java CI with Maven
 on:
   push:
     branches: [ "master" ]
-    tags:
-      - 'v*'       # 例如 v1.0.0 会触发发布
   pull_request:
     branches: [ "master" ]
 
@@ -33,20 +31,6 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: List artifacts
       run: ls -R target
-
-          # 只在 tag push 时创建 Release
-    - name: Create GitHub Release
-    # 仅当这是一个 tag（refs/tags/xxx）时才执行
-      if: startsWith(github.ref, 'refs/tags/')
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref_name }}          # 当前 tag，例如 v1.0.0
-        release_name: Release ${{ github.ref_name }}
-        draft: false
-        prerelease: false
 
     # 上传 shaded 版本
     - name: Upload shaded jar
