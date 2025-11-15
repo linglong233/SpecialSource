@@ -83,4 +83,4 @@ jobs:
         asset_path: ./target/SpecialSource-1.11.6-SNAPSHOT.jar
         asset_name: SpecialSource-1.11.6-SNAPSHOT-${{ github.ref_name }}.jar
         asset_content_type: application/java-archive
-      
+    
